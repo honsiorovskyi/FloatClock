@@ -2,6 +2,7 @@
 
 // Copyright (c) 2018 Daniel
 // Copyright (c) 2023 Roman Dubtsov
+// Copyright (c) 2025 honsiorovskyi
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
