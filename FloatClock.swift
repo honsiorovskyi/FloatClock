@@ -65,6 +65,66 @@ class Clock: NSObject, NSApplicationDelegate {
         )
         window.setFrameOrigin(newOrigin)
     }
+    
+    private func adjustWindowSizeForContent() {
+        guard let window = clockWindow,
+              let containerView = window.contentView as? ClickableView else { return }
+        
+        // Find the time and date labels
+        var timeLabel: NSTextField?
+        var dateLabel: NSTextField?
+        
+        for subview in containerView.subviews {
+            if let textField = subview as? NSTextField {
+                if textField.font?.fontName.contains("Mono") == true {
+                    timeLabel = textField
+                } else {
+                    dateLabel = textField
+                }
+            }
+        }
+        
+        guard let time = timeLabel, let date = dateLabel else { return }
+        
+        // Recalculate optimal width
+        let newWidth = calculateOptimalWindowWidth(timeLabel: time, dateLabel: date)
+        let currentFrame = window.frame
+        
+        // Only resize if width has changed significantly
+        if abs(newWidth - currentFrame.width) > 1 {
+            let newFrame = NSRect(
+                x: currentFrame.maxX - newWidth, // Keep right edge in same position
+                y: currentFrame.minY,
+                width: newWidth,
+                height: currentFrame.height
+            )
+            
+            window.setFrame(newFrame, display: true, animate: false)
+            
+            // Reposition labels within the new container
+            repositionLabels(timeLabel: time, dateLabel: date, containerSize: NSSize(width: newWidth, height: currentFrame.height))
+        }
+    }
+    
+    private func repositionLabels(timeLabel: NSTextField, dateLabel: NSTextField, containerSize: NSSize) {
+        // Size the labels to fit their content
+        timeLabel.sizeToFit()
+        dateLabel.sizeToFit()
+        
+        // Calculate positions for stacked labels
+        let totalHeight = timeLabel.frame.height + dateLabel.frame.height + 2 // 2px spacing
+        let startY = (containerSize.height - totalHeight) / 2
+        
+        // Position time label (top)
+        let timeLabelX = (containerSize.width - timeLabel.frame.width) / 2
+        let timeLabelY = startY + dateLabel.frame.height + 2
+        timeLabel.frame = NSRect(x: timeLabelX, y: timeLabelY, width: timeLabel.frame.width, height: timeLabel.frame.height)
+        
+        // Position date label (bottom)
+        let dateLabelX = (containerSize.width - dateLabel.frame.width) / 2
+        let dateLabelY = startY
+        dateLabel.frame = NSRect(x: dateLabelX, y: dateLabelY, width: dateLabel.frame.width, height: dateLabel.frame.height)
+    }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         initTimeDisplay()
@@ -215,8 +275,9 @@ class Clock: NSObject, NSApplicationDelegate {
         label.alignment = .center
         label.textColor = NSColor(red: 0.315, green: 0.315, blue: 0.315, alpha: 1.0)
 
-        let timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+        let timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
             label.stringValue = formatter.string(from: Date())
+            self?.adjustWindowSizeForContent()
         }
         timer.tolerance = 6
         timer.fire()
