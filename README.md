@@ -9,28 +9,41 @@ Screenshot:
 
 Forked and slightly reworked from https://github.com/kolbusa/FloatClock.
 
+## Quick Install
+
+Download the latest DMG from the [releases page](https://github.com/honsiorovskyi/FloatClock/releases/latest) and drag the app to your Applications folder.
+
 ## Build instructions
 
-Requires Swift
+Requires Swift and `rsvg-convert` (for app icon generation):
+```bash
+brew install librsvg
+```
 
-Build command-line version: `make all`
+**Build targets:**
+- `make` or `make all` - Build CLI binary to `build/FloatClock`
+- `make app` - Build macOS app bundle to `build/FloatClock.app`
+- `make dmg` - Create DMG installer at `build/FloatClock.dmg`
+- `make clean` - Remove all build artifacts (`build/` directory)
 
-**Build macOS app bundle: `make app`**
+**Installation targets:**
+- `sudo make install` - Install CLI version to `/usr/local/bin`
+- `make register` - Add CLI version to login items (auto-start)
+- `make unregister` - Remove CLI version from login items
+- `make uninstall` - Uninstall CLI version and remove from login items
 
-Clean: `make clean`
-
-Install: `sudo make install`
-
-Add to login items: `make register`
-
-Remove from login items: `make unregister`
-
-Uninstall: `make uninstall`
+All build artifacts are placed in the `build/` directory to keep the project root clean.
 
 ## Usage
 
 ### App Bundle
-Run `make app` to create `FloatClock.app` which you can double-click to run or drag to your Applications folder.
+Run `make app` to create `build/FloatClock.app` which you can double-click to run or drag to your Applications folder.
+
+### DMG Installer
+Run `make dmg` to create `build/FloatClock.dmg` - a disk image with the app and Applications folder shortcut for easy installation.
+
+### CLI Version
+Run `make` to build the command-line version to `build/FloatClock`, or use `sudo make install` to install it system-wide.
 
 ### Features
 - Auto-hides when mouse is away from the bottom of the screen
