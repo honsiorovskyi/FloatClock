@@ -265,7 +265,6 @@ class Clock: NSObject, NSApplicationDelegate {
     
     func initDateLabel(font: NSFont) -> NSTextField {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMM d"
 
         let label = NSTextField()
         label.font = font
@@ -276,6 +275,16 @@ class Clock: NSObject, NSApplicationDelegate {
         label.textColor = NSColor(red: 0.315, green: 0.315, blue: 0.315, alpha: 1.0)
 
         let timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            let calendar = Calendar.current
+            let weekday = calendar.component(.weekday, from: Date())
+            
+            // Use different format for Wednesday (weekday 4)
+            if weekday == 4 {
+                formatter.dateFormat = "EEE' 🐸', MMM d"
+            } else {
+                formatter.dateFormat = "EEE, MMM d"
+            }
+            
             label.stringValue = formatter.string(from: Date())
             self?.adjustWindowSizeForContent()
         }
@@ -332,7 +341,7 @@ class Clock: NSObject, NSApplicationDelegate {
     func initTimeDisplay() {
         let windowHeight = getDockHeight()
         let timeFontSize = calculateFontSize(for: windowHeight)
-        let dateFontSize = timeFontSize * 0.7 // Make date smaller than time
+        let dateFontSize = timeFontSize * 0.65 // Make date smaller than time
         
         let timeFont = NSFont.monospacedDigitSystemFont(ofSize: timeFontSize, weight: .regular)
         let dateFont = NSFont.systemFont(ofSize: dateFontSize, weight: .regular)
