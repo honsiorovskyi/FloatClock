@@ -17,7 +17,7 @@ Build: `make all`
 
 Clean: `make clean`
 
-Install: `make install`
+Install: `sudo make install`
 
 Add to login items: `make register`
 

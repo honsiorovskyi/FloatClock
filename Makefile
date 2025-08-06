@@ -6,7 +6,7 @@ LAUNCH_AGENTS_DIR = $(HOME)/Library/LaunchAgents
 PLIST = $(NAME).plist
 INSTALLED_PLIST = $(LAUNCH_AGENTS_DIR)/$(PLIST)
 
-.PHONY: install uninstall all clean register unregister
+.PHONY: install install-plist uninstall all clean register unregister
 
 all: $(NAME)
 
@@ -19,8 +19,10 @@ $(PLIST): $(PLIST).in
 clean:
 	rm -f $(NAME) $(PLIST)
 
-install: $(NAME) $(PLIST)
+install: $(NAME)
 	install -m 755 $(NAME) $(BIN_DIR)
+
+install-plist: $(PLIST)
 	install -m 644 $(PLIST) $(INSTALLED_PLIST)
 
 uninstall: unregister
@@ -29,5 +31,5 @@ uninstall: unregister
 unregister:
 	test -f $(INSTALLED_PLIST) && launchctl unload $(INSTALLED_PLIST) || true
 
-register: install
+register: install install-plist
 	launchctl load $(INSTALLED_PLIST)
