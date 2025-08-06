@@ -13,7 +13,9 @@ Forked and slightly reworked from https://github.com/kolbusa/FloatClock.
 
 Requires Swift
 
-Build: `make all`
+Build command-line version: `make all`
+
+**Build macOS app bundle: `make app`**
 
 Clean: `make clean`
 
@@ -24,3 +26,15 @@ Add to login items: `make register`
 Remove from login items: `make unregister`
 
 Uninstall: `make uninstall`
+
+## Usage
+
+### App Bundle
+Run `make app` to create `FloatClock.app` which you can double-click to run or drag to your Applications folder.
+
+### Features
+- Auto-hides when mouse is away from the bottom of the screen
+- Shows when mouse approaches the bottom edge (2px threshold)  
+- Left-click opens Calendar app
+- Right-click shows context menu with "Quit" option
+- Displays time and date in a floating window

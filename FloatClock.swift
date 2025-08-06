@@ -36,6 +36,19 @@ class ClickableView: NSView {
     override func mouseDown(with event: NSEvent) {
         onMouseDown?()
     }
+    
+    override func rightMouseDown(with event: NSEvent) {
+        let menu = NSMenu()
+        let quitItem = NSMenuItem(title: "Quit", action: #selector(quitApplication), keyEquivalent: "")
+        quitItem.target = self
+        menu.addItem(quitItem)
+        
+        NSMenu.popUpContextMenu(menu, with: event, for: self)
+    }
+    
+    @objc private func quitApplication() {
+        NSApplication.shared.terminate(nil)
+    }
 }
 
 class Clock: NSObject, NSApplicationDelegate {
